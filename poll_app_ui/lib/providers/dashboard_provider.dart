@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,7 +38,7 @@ class DashboardProvider extends ChangeNotifier {
 
   Future<List<PollModel>> getAllPolls() async {
     try {
-      await walletConnectProvider.initWalletProvider();
+      await walletConnectProvider.connectWallet();
       List<dynamic> res =
           await walletConnectProvider.contract!.call('listPolls');
       print(res);
@@ -45,11 +48,10 @@ class DashboardProvider extends ChangeNotifier {
           var poll = res.elementAt(x);
           var banner = await getImageURl(poll[2]);
           allPolls.add(PollModel(
-            title: poll[0],
-            description: poll[1],
-            banner: banner,
-            //expiresAt:int.parse(poll[3])
-          ));
+              title: poll[0],
+              description: poll[1],
+              banner: banner,
+              expiresAt: int.parse(poll[3].toString())));
           getPollTotalVotes(x);
         }
       }
@@ -69,18 +71,18 @@ class DashboardProvider extends ChangeNotifier {
       print(res);
       if (res.isNotEmpty) {
         for (int x = 0; x < res.length; x++) {
-          var candidate = res.elementAt(index);
+          var candidate = res.elementAt(x);
           var banner = await getImageURl(candidate[2]);
           pollCandidates.add(PollCandidateModel(
             title: candidate[0],
             description: candidate[1],
             banner: banner,
           ));
-          getCandidateTotalVotes(index, x);
+          await getCandidateTotalVotes(index, x);
         }
       }
     } catch (e) {
-      print('errror loading polls: ${e}');
+      print('errror loading polls candidates: ${e}');
     }
     return pollCandidates;
   }
@@ -108,13 +110,19 @@ class DashboardProvider extends ChangeNotifier {
   }
 
   Future<void> getPollTotalVotes(int index) async {
+    await walletConnectProvider.connectWallet();
     try {
-      List<dynamic> res = await walletConnectProvider.contract!
+      var res = await walletConnectProvider.contract!
           .call('getPollTotalVotes', [index]);
       print(res);
-      if (res.isNotEmpty) {
-        allPolls.insert(
-            index, allPolls.elementAt(index).copyWith(totalVotes: res[0]));
+      allPolls[index] = allPolls
+          .elementAt(index)
+          .copyWith(totalVotes: int.parse(res.toString()));
+      if (myPolls.any((el) => allPolls[index].title == el.title)) {
+        PollModel model = myPolls.singleWhere(
+            (element) => allPolls[index].hashCode == element.hashCode);
+        myPolls[myPolls.indexOf(model)] =
+            model.copyWith(totalVotes: int.parse(res.toString()));
       }
     } catch (e) {
       print('errror loading getPollTotalVotes: ${e}');
@@ -122,14 +130,14 @@ class DashboardProvider extends ChangeNotifier {
   }
 
   Future<void> getCandidateTotalVotes(int pollIndex, int index) async {
+    await walletConnectProvider.connectWallet();
     try {
-      List<dynamic> res = await walletConnectProvider.contract!
+      var res = await walletConnectProvider.contract!
           .call('getCandidateTotalVotes', [pollIndex, index]);
       print(res);
-      if (res.isNotEmpty) {
-        pollCandidates.insert(index,
-            pollCandidates.elementAt(index).copyWith(totalVotes: res[0]));
-      }
+      pollCandidates[index] = pollCandidates
+          .elementAt(index)
+          .copyWith(totalVotes: int.parse(res.toString()));
     } catch (e) {
       print('errror loading getCandidateTotalVotes: ${e}');
     }
@@ -145,8 +153,8 @@ class DashboardProvider extends ChangeNotifier {
         for (int x = 0; x < res.length; x++) {
           var vote = res.elementAt(x);
           myVotes.add(MyVote(
-            pollIndex: vote[0],
-            candidateIndex: vote[1],
+            pollIndex: int.parse(vote[0].toString()),
+            candidateIndex: int.parse(vote[1].toString()),
           ));
         }
       }
@@ -156,7 +164,7 @@ class DashboardProvider extends ChangeNotifier {
   }
 
   Future<List<PollModel>> listAddressPolls() async {
-    await walletConnectProvider.initWalletProvider();
+    await walletConnectProvider.connectWallet();
     try {
       List<dynamic> res =
           await walletConnectProvider.contract!.call('listAddressPolls', []);
@@ -167,11 +175,10 @@ class DashboardProvider extends ChangeNotifier {
           var poll = res.elementAt(x);
           var banner = await getImageURl(poll[2]);
           myPolls.add(PollModel(
-            title: poll[0],
-            description: poll[1],
-            banner: banner,
-            //expiresAt:int.parse(poll[3])
-          ));
+              title: poll[0],
+              description: poll[1],
+              banner: banner,
+              expiresAt: int.parse(poll[3].toString())));
         }
       }
     } catch (e) {

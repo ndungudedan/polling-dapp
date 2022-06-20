@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test_1/constants/constants.dart';
 import 'package:flutter_test_1/utils/text_styles.dart';
 import '../../providers/create_poll_provider.dart';
+import '../../providers/wallet_connect_provider.dart';
 import '../../widgets/snackbar_widget.dart';
 import '../dashboard_screen.dart';
 import '../poll_widget.dart';
@@ -17,6 +18,23 @@ class _SubmissionScreenState extends ConsumerState<SubmissionScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     final pollProvider = ref.watch(createPollProvider);
+        final walletProvider = ref.watch(walletConnectProvider.notifier);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (walletProvider.currentChainId != WalletConnectProvider().chainId &&
+        mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          duration: const Duration(seconds: 10),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.transparent,
+          content: SnackBarWidget(
+            title: 'Change your Wallet Chain to Polygon Mumbai',
+            message:
+                'This dapp works on the Ethereum Polygon Mumbai Testnet network',
+            isError: true,
+          )));
+    }
+    });
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

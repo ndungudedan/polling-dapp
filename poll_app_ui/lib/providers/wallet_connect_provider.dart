@@ -54,6 +54,7 @@ class WalletConnectProvider extends StateNotifier<int> {
 
         ethereum!.onChainChanged((chain) {
           currentChainId = chain;
+          state = chain;
         });
         web3Client = Web3Provider(ethereum!);
         await loadContract(web3Client?.getSigner());
