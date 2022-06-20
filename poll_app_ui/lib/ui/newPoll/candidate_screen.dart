@@ -1,11 +1,10 @@
 import 'dart:typed_data';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test_1/constants/constants.dart';
 import 'package:flutter_test_1/models/poll_model.dart';
-
 import '../../providers/create_poll_provider.dart';
+import '../../utils/text_styles.dart';
 import '../../widgets/footer_buttons.dart';
 import '../../widgets/textfield_border.dart';
 import '../poll_widget.dart';
@@ -32,13 +31,19 @@ class _CandidateScreenState extends ConsumerState<CandidateScreen> {
     Size size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Form(
             key: formKey,
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Text('Poll Candidates Details',style: poppinsBold.copyWith(fontSize: 30,color: kPrimaryColor),),
+            ),
                   Container(
                     padding: const EdgeInsets.all(8),
                     height: size.height / 4,
@@ -65,6 +70,9 @@ class _CandidateScreenState extends ConsumerState<CandidateScreen> {
                                 left: 0,
                                 right: 0,
                                 child: OutlinedButton(
+                                  style: OutlinedButton.styleFrom(
+                              backgroundColor: kPrimaryLightColor
+                            ),
                                     onPressed: () async {
                                       image = await pollProvider.pickImage();
 
@@ -95,20 +103,29 @@ class _CandidateScreenState extends ConsumerState<CandidateScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  OutlinedButton(
-                      onPressed: () {
-                        if (formKey.currentState!.validate()) {
-                          pollProvider.addCandidate(
-                              image!,
-                              PollCandidateModel(
-                                  description: _descController.text,
-                                  title: _titleController.text));
-                          _descController.clear();
-                          _titleController.clear();
-                          image = null;
-                        }
-                      },
-                      child: const Text('Add')),
+                  Center(
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor: kPrimaryColor
+                      ),
+                        onPressed: () {
+                          if (formKey.currentState!.validate() && image!=null) {
+                            pollProvider.addCandidate(
+                                image!,
+                                PollCandidateModel(
+                                    description: _descController.text,
+                                    title: _titleController.text));
+                            _descController.clear();
+                            _titleController.clear();
+                            image = null;
+                          }
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child:  Text('Add Candidate',
+                          style: poppinsMedium.copyWith(color: Colors.white),),
+                        )),
+                  ),
                 ],
               ),
             ),

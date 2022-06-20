@@ -25,8 +25,7 @@ mixin _$PollModel {
   String get description => throw _privateConstructorUsedError;
   int get totalVotes => throw _privateConstructorUsedError;
   int get expiresAt => throw _privateConstructorUsedError;
-  List<PollCandidateModel>? get candidates =>
-      throw _privateConstructorUsedError;
+  List<PollCandidateModel> get candidates => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -44,7 +43,7 @@ abstract class $PollModelCopyWith<$Res> {
       String description,
       int totalVotes,
       int expiresAt,
-      List<PollCandidateModel>? candidates});
+      List<PollCandidateModel> candidates});
 }
 
 /// @nodoc
@@ -88,7 +87,7 @@ class _$PollModelCopyWithImpl<$Res> implements $PollModelCopyWith<$Res> {
       candidates: candidates == freezed
           ? _value.candidates
           : candidates // ignore: cast_nullable_to_non_nullable
-              as List<PollCandidateModel>?,
+              as List<PollCandidateModel>,
     ));
   }
 }
@@ -105,7 +104,7 @@ abstract class _$$_PollModelCopyWith<$Res> implements $PollModelCopyWith<$Res> {
       String description,
       int totalVotes,
       int expiresAt,
-      List<PollCandidateModel>? candidates});
+      List<PollCandidateModel> candidates});
 }
 
 /// @nodoc
@@ -151,7 +150,7 @@ class __$$_PollModelCopyWithImpl<$Res> extends _$PollModelCopyWithImpl<$Res>
       candidates: candidates == freezed
           ? _value._candidates
           : candidates // ignore: cast_nullable_to_non_nullable
-              as List<PollCandidateModel>?,
+              as List<PollCandidateModel>,
     ));
   }
 }
@@ -165,7 +164,7 @@ class _$_PollModel implements _PollModel {
       this.description = '',
       this.totalVotes = 0,
       this.expiresAt = 0,
-      final List<PollCandidateModel>? candidates = const []})
+      final List<PollCandidateModel> candidates = const []})
       : _candidates = candidates;
 
   factory _$_PollModel.fromJson(Map<String, dynamic> json) =>
@@ -186,14 +185,12 @@ class _$_PollModel implements _PollModel {
   @override
   @JsonKey()
   final int expiresAt;
-  final List<PollCandidateModel>? _candidates;
+  final List<PollCandidateModel> _candidates;
   @override
   @JsonKey()
-  List<PollCandidateModel>? get candidates {
-    final value = _candidates;
-    if (value == null) return null;
+  List<PollCandidateModel> get candidates {
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
+    return EqualUnmodifiableListView(_candidates);
   }
 
   @override
@@ -246,7 +243,7 @@ abstract class _PollModel implements PollModel {
       final String description,
       final int totalVotes,
       final int expiresAt,
-      final List<PollCandidateModel>? candidates}) = _$_PollModel;
+      final List<PollCandidateModel> candidates}) = _$_PollModel;
 
   factory _PollModel.fromJson(Map<String, dynamic> json) =
       _$_PollModel.fromJson;
@@ -262,8 +259,7 @@ abstract class _PollModel implements PollModel {
   @override
   int get expiresAt => throw _privateConstructorUsedError;
   @override
-  List<PollCandidateModel>? get candidates =>
-      throw _privateConstructorUsedError;
+  List<PollCandidateModel> get candidates => throw _privateConstructorUsedError;
   @override
   @JsonKey(ignore: true)
   _$$_PollModelCopyWith<_$_PollModel> get copyWith =>
@@ -277,9 +273,9 @@ PollCandidateModel _$PollCandidateModelFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$PollCandidateModel {
   String get title => throw _privateConstructorUsedError;
+  String get banner => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   int get totalVotes => throw _privateConstructorUsedError;
-  int get expiresAt => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -292,7 +288,7 @@ abstract class $PollCandidateModelCopyWith<$Res> {
   factory $PollCandidateModelCopyWith(
           PollCandidateModel value, $Res Function(PollCandidateModel) then) =
       _$PollCandidateModelCopyWithImpl<$Res>;
-  $Res call({String title, String description, int totalVotes, int expiresAt});
+  $Res call({String title, String banner, String description, int totalVotes});
 }
 
 /// @nodoc
@@ -307,14 +303,18 @@ class _$PollCandidateModelCopyWithImpl<$Res>
   @override
   $Res call({
     Object? title = freezed,
+    Object? banner = freezed,
     Object? description = freezed,
     Object? totalVotes = freezed,
-    Object? expiresAt = freezed,
   }) {
     return _then(_value.copyWith(
       title: title == freezed
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      banner: banner == freezed
+          ? _value.banner
+          : banner // ignore: cast_nullable_to_non_nullable
               as String,
       description: description == freezed
           ? _value.description
@@ -323,10 +323,6 @@ class _$PollCandidateModelCopyWithImpl<$Res>
       totalVotes: totalVotes == freezed
           ? _value.totalVotes
           : totalVotes // ignore: cast_nullable_to_non_nullable
-              as int,
-      expiresAt: expiresAt == freezed
-          ? _value.expiresAt
-          : expiresAt // ignore: cast_nullable_to_non_nullable
               as int,
     ));
   }
@@ -339,7 +335,7 @@ abstract class _$$_PollCandidateModelCopyWith<$Res>
           $Res Function(_$_PollCandidateModel) then) =
       __$$_PollCandidateModelCopyWithImpl<$Res>;
   @override
-  $Res call({String title, String description, int totalVotes, int expiresAt});
+  $Res call({String title, String banner, String description, int totalVotes});
 }
 
 /// @nodoc
@@ -356,14 +352,18 @@ class __$$_PollCandidateModelCopyWithImpl<$Res>
   @override
   $Res call({
     Object? title = freezed,
+    Object? banner = freezed,
     Object? description = freezed,
     Object? totalVotes = freezed,
-    Object? expiresAt = freezed,
   }) {
     return _then(_$_PollCandidateModel(
       title: title == freezed
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      banner: banner == freezed
+          ? _value.banner
+          : banner // ignore: cast_nullable_to_non_nullable
               as String,
       description: description == freezed
           ? _value.description
@@ -372,10 +372,6 @@ class __$$_PollCandidateModelCopyWithImpl<$Res>
       totalVotes: totalVotes == freezed
           ? _value.totalVotes
           : totalVotes // ignore: cast_nullable_to_non_nullable
-              as int,
-      expiresAt: expiresAt == freezed
-          ? _value.expiresAt
-          : expiresAt // ignore: cast_nullable_to_non_nullable
               as int,
     ));
   }
@@ -386,9 +382,9 @@ class __$$_PollCandidateModelCopyWithImpl<$Res>
 class _$_PollCandidateModel implements _PollCandidateModel {
   const _$_PollCandidateModel(
       {this.title = '',
+      this.banner = '',
       this.description = '',
-      this.totalVotes = 0,
-      this.expiresAt = 0});
+      this.totalVotes = 0});
 
   factory _$_PollCandidateModel.fromJson(Map<String, dynamic> json) =>
       _$$_PollCandidateModelFromJson(json);
@@ -398,17 +394,17 @@ class _$_PollCandidateModel implements _PollCandidateModel {
   final String title;
   @override
   @JsonKey()
+  final String banner;
+  @override
+  @JsonKey()
   final String description;
   @override
   @JsonKey()
   final int totalVotes;
-  @override
-  @JsonKey()
-  final int expiresAt;
 
   @override
   String toString() {
-    return 'PollCandidateModel(title: $title, description: $description, totalVotes: $totalVotes, expiresAt: $expiresAt)';
+    return 'PollCandidateModel(title: $title, banner: $banner, description: $description, totalVotes: $totalVotes)';
   }
 
   @override
@@ -417,11 +413,11 @@ class _$_PollCandidateModel implements _PollCandidateModel {
         (other.runtimeType == runtimeType &&
             other is _$_PollCandidateModel &&
             const DeepCollectionEquality().equals(other.title, title) &&
+            const DeepCollectionEquality().equals(other.banner, banner) &&
             const DeepCollectionEquality()
                 .equals(other.description, description) &&
             const DeepCollectionEquality()
-                .equals(other.totalVotes, totalVotes) &&
-            const DeepCollectionEquality().equals(other.expiresAt, expiresAt));
+                .equals(other.totalVotes, totalVotes));
   }
 
   @JsonKey(ignore: true)
@@ -429,9 +425,9 @@ class _$_PollCandidateModel implements _PollCandidateModel {
   int get hashCode => Object.hash(
       runtimeType,
       const DeepCollectionEquality().hash(title),
+      const DeepCollectionEquality().hash(banner),
       const DeepCollectionEquality().hash(description),
-      const DeepCollectionEquality().hash(totalVotes),
-      const DeepCollectionEquality().hash(expiresAt));
+      const DeepCollectionEquality().hash(totalVotes));
 
   @JsonKey(ignore: true)
   @override
@@ -448,9 +444,9 @@ class _$_PollCandidateModel implements _PollCandidateModel {
 abstract class _PollCandidateModel implements PollCandidateModel {
   const factory _PollCandidateModel(
       {final String title,
+      final String banner,
       final String description,
-      final int totalVotes,
-      final int expiresAt}) = _$_PollCandidateModel;
+      final int totalVotes}) = _$_PollCandidateModel;
 
   factory _PollCandidateModel.fromJson(Map<String, dynamic> json) =
       _$_PollCandidateModel.fromJson;
@@ -458,13 +454,159 @@ abstract class _PollCandidateModel implements PollCandidateModel {
   @override
   String get title => throw _privateConstructorUsedError;
   @override
+  String get banner => throw _privateConstructorUsedError;
+  @override
   String get description => throw _privateConstructorUsedError;
   @override
   int get totalVotes => throw _privateConstructorUsedError;
   @override
-  int get expiresAt => throw _privateConstructorUsedError;
-  @override
   @JsonKey(ignore: true)
   _$$_PollCandidateModelCopyWith<_$_PollCandidateModel> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+MyVote _$MyVoteFromJson(Map<String, dynamic> json) {
+  return _MyVote.fromJson(json);
+}
+
+/// @nodoc
+mixin _$MyVote {
+  int get pollIndex => throw _privateConstructorUsedError;
+  int get candidateIndex => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $MyVoteCopyWith<MyVote> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $MyVoteCopyWith<$Res> {
+  factory $MyVoteCopyWith(MyVote value, $Res Function(MyVote) then) =
+      _$MyVoteCopyWithImpl<$Res>;
+  $Res call({int pollIndex, int candidateIndex});
+}
+
+/// @nodoc
+class _$MyVoteCopyWithImpl<$Res> implements $MyVoteCopyWith<$Res> {
+  _$MyVoteCopyWithImpl(this._value, this._then);
+
+  final MyVote _value;
+  // ignore: unused_field
+  final $Res Function(MyVote) _then;
+
+  @override
+  $Res call({
+    Object? pollIndex = freezed,
+    Object? candidateIndex = freezed,
+  }) {
+    return _then(_value.copyWith(
+      pollIndex: pollIndex == freezed
+          ? _value.pollIndex
+          : pollIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+      candidateIndex: candidateIndex == freezed
+          ? _value.candidateIndex
+          : candidateIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+abstract class _$$_MyVoteCopyWith<$Res> implements $MyVoteCopyWith<$Res> {
+  factory _$$_MyVoteCopyWith(_$_MyVote value, $Res Function(_$_MyVote) then) =
+      __$$_MyVoteCopyWithImpl<$Res>;
+  @override
+  $Res call({int pollIndex, int candidateIndex});
+}
+
+/// @nodoc
+class __$$_MyVoteCopyWithImpl<$Res> extends _$MyVoteCopyWithImpl<$Res>
+    implements _$$_MyVoteCopyWith<$Res> {
+  __$$_MyVoteCopyWithImpl(_$_MyVote _value, $Res Function(_$_MyVote) _then)
+      : super(_value, (v) => _then(v as _$_MyVote));
+
+  @override
+  _$_MyVote get _value => super._value as _$_MyVote;
+
+  @override
+  $Res call({
+    Object? pollIndex = freezed,
+    Object? candidateIndex = freezed,
+  }) {
+    return _then(_$_MyVote(
+      pollIndex: pollIndex == freezed
+          ? _value.pollIndex
+          : pollIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+      candidateIndex: candidateIndex == freezed
+          ? _value.candidateIndex
+          : candidateIndex // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$_MyVote implements _MyVote {
+  const _$_MyVote({this.pollIndex = 0, this.candidateIndex = 0});
+
+  factory _$_MyVote.fromJson(Map<String, dynamic> json) =>
+      _$$_MyVoteFromJson(json);
+
+  @override
+  @JsonKey()
+  final int pollIndex;
+  @override
+  @JsonKey()
+  final int candidateIndex;
+
+  @override
+  String toString() {
+    return 'MyVote(pollIndex: $pollIndex, candidateIndex: $candidateIndex)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_MyVote &&
+            const DeepCollectionEquality().equals(other.pollIndex, pollIndex) &&
+            const DeepCollectionEquality()
+                .equals(other.candidateIndex, candidateIndex));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(pollIndex),
+      const DeepCollectionEquality().hash(candidateIndex));
+
+  @JsonKey(ignore: true)
+  @override
+  _$$_MyVoteCopyWith<_$_MyVote> get copyWith =>
+      __$$_MyVoteCopyWithImpl<_$_MyVote>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_MyVoteToJson(this);
+  }
+}
+
+abstract class _MyVote implements MyVote {
+  const factory _MyVote({final int pollIndex, final int candidateIndex}) =
+      _$_MyVote;
+
+  factory _MyVote.fromJson(Map<String, dynamic> json) = _$_MyVote.fromJson;
+
+  @override
+  int get pollIndex => throw _privateConstructorUsedError;
+  @override
+  int get candidateIndex => throw _privateConstructorUsedError;
+  @override
+  @JsonKey(ignore: true)
+  _$$_MyVoteCopyWith<_$_MyVote> get copyWith =>
       throw _privateConstructorUsedError;
 }

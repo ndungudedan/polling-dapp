@@ -1,17 +1,15 @@
 import 'dart:typed_data';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test_1/models/poll_model.dart';
-import 'package:flutter_test_1/utils/app_theme.dart';
-import 'package:flutter_test_1/utils/assets.dart';
 import 'package:flutter_test_1/utils/text_styles.dart';
 
 import '../providers/create_poll_provider.dart';
 
-class PollWidget extends ConsumerWidget {
+class NewPollWidget extends ConsumerWidget {
+  final PollModel pollModel;
+  const NewPollWidget({required this.pollModel});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Size size = MediaQuery.of(context).size;
@@ -20,16 +18,16 @@ class PollWidget extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.asset(
-            Assets.dash1,
+          Image.network(
+            pollModel.banner,
             height: size.height / 5,
             width: size.width / 5,
           ),
           Text(
-            'Astronaut',
+            pollModel.title,
           ),
-          Text('Descriptive descriptions'),
-          OutlinedButton(onPressed: () {}, child: Text('View Details'))
+          Text(pollModel.description),
+          OutlinedButton(onPressed: () {}, child: const Text('View Candidate'))
         ],
       ),
     );
@@ -40,31 +38,50 @@ class PollCandidateWidget extends ConsumerWidget {
   final PollCandidateModel candidate;
   final Uint8List image;
 
-  PollCandidateWidget({required this.candidate, required this.image});
+  const PollCandidateWidget({required this.candidate, required this.image});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Size size = MediaQuery.of(context).size;
     final pollProvider = ref.watch(createPollProvider);
 
     return Container(
+      width: size.width / 5,
+      padding: EdgeInsets.symmetric(vertical: 15,horizontal: 22),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Image.memory(
             image,
-            height: size.height / 5,
-            width: size.width / 5,
+            height: size.height / 3,
+            width: size.width / 3,
           ),
-          Text(
-            candidate.title,
+          Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: Text(
+              candidate.title,
+              style: poppinsBold.copyWith(fontSize: 20),
+            ),
           ),
-          Text(candidate.description),
-          OutlinedButton(
-              onPressed: () {
-                pollProvider.deletePollCandidate(candidate);
-              },
-              child: Text('Delete'))
+          Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: Text(candidate.description,
+            style: poppinsMedium,
+            ),
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                                  backgroundColor: Colors.red
+                                ),
+                  onPressed: () {
+                    pollProvider.deletePollCandidate(candidate);
+                  },
+                  child: const Text('Delete')),
+            ),
+          )
         ],
       ),
     );

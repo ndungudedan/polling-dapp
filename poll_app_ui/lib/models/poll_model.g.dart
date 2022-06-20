@@ -33,16 +33,26 @@ _$_PollCandidateModel _$$_PollCandidateModelFromJson(
         Map<String, dynamic> json) =>
     _$_PollCandidateModel(
       title: json['title'] as String? ?? '',
+      banner: json['banner'] as String? ?? '',
       description: json['description'] as String? ?? '',
       totalVotes: json['totalVotes'] as int? ?? 0,
-      expiresAt: json['expiresAt'] as int? ?? 0,
     );
 
 Map<String, dynamic> _$$_PollCandidateModelToJson(
         _$_PollCandidateModel instance) =>
     <String, dynamic>{
       'title': instance.title,
+      'banner': instance.banner,
       'description': instance.description,
       'totalVotes': instance.totalVotes,
-      'expiresAt': instance.expiresAt,
+    };
+
+_$_MyVote _$$_MyVoteFromJson(Map<String, dynamic> json) => _$_MyVote(
+      pollIndex: json['pollIndex'] as int? ?? 0,
+      candidateIndex: json['candidateIndex'] as int? ?? 0,
+    );
+
+Map<String, dynamic> _$$_MyVoteToJson(_$_MyVote instance) => <String, dynamic>{
+      'pollIndex': instance.pollIndex,
+      'candidateIndex': instance.candidateIndex,
     };

@@ -2,7 +2,9 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test_1/constants/constants.dart';
 import 'package:flutter_test_1/models/poll_model.dart';
+import 'package:flutter_test_1/utils/text_styles.dart';
 import 'package:flutter_test_1/widgets/textfield_border.dart';
 
 import '../../providers/create_poll_provider.dart';
@@ -19,10 +21,10 @@ class PollModelScreen extends ConsumerStatefulWidget {
 }
 
 class _PollModelScreenState extends ConsumerState<PollModelScreen> {
-  TextEditingController _titleController = TextEditingController();
-  TextEditingController _dateTimeContoller = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _dateTimeContoller = TextEditingController();
   DateTime? dateTime;
-  TextEditingController _descController = TextEditingController();
+  final TextEditingController _descController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   @override
@@ -35,7 +37,12 @@ class _PollModelScreenState extends ConsumerState<PollModelScreen> {
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Text('Poll Details',style: poppinsBold.copyWith(fontSize: 30,color: kPrimaryColor),),
+            ),
             Container(
               padding: EdgeInsets.all(8),
               height: size.height / 3,
@@ -61,6 +68,9 @@ class _PollModelScreenState extends ConsumerState<PollModelScreen> {
                           left: 0,
                           right: 0,
                           child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: kPrimaryLightColor
+                            ),
                               onPressed: () {
                                 pollProvider.pickPollBanner();
                               },
@@ -83,7 +93,11 @@ class _PollModelScreenState extends ConsumerState<PollModelScreen> {
             BorderedTextField(
               enabled: true,
               controller: _descController,
+              maxLines: 4,
               hintText: 'Poll Description',
+            ),
+            SizedBox(
+              height: 40,
             ),
             BorderedTextField(
               onTap: () async {
@@ -108,10 +122,13 @@ class _PollModelScreenState extends ConsumerState<PollModelScreen> {
               controller: _dateTimeContoller,
               hintText: 'Closing Time',
             ),
+            SizedBox(
+              height: 50,
+            ),
             FooterButtons(
               onBackPressed: () {},
               onForwardPressed: () {
-                if (formKey.currentState!.validate()) {
+                if (formKey.currentState!.validate() && pollProvider.pollBanner!=null) {
                   pollProvider.createPollModel(
                       _titleController.text, _descController.text, dateTime!);
                 }

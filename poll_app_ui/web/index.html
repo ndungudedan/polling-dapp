@@ -100,5 +100,32 @@
       loadMainDartJs();
     }
   </script>
+
+<script type="module">
+	// Import the functions you need from the SDKs you need
+	import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-app.js";
+	import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-analytics.js";
+	import { getStorage } from "https://www.gstatic.com/firebasejs/9.8.3/firebase/storage";
+	// TODO: Add SDKs for Firebase products that you want to use
+	// https://firebase.google.com/docs/web/setup#available-libraries
+  
+	// Your web app's Firebase configuration
+	// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+	const firebaseConfig = {
+	  apiKey: "AIzaSyBlvATdHf81z3tldYPp2QDCNjcSS56yeAc",
+	  authDomain: "digitalreceipts2.firebaseapp.com",
+	  databaseURL: "https://digitalreceipts2.firebaseio.com",
+	  projectId: "digitalreceipts2",
+	  storageBucket: "digitalreceipts2.appspot.com",
+	  messagingSenderId: "980066212126",
+	  appId: "1:980066212126:web:9bd669e4a6800ca1c3110f",
+	  measurementId: "G-DDQBR3V39M"
+	};
+  
+	// Initialize Firebase
+	const app = initializeApp(firebaseConfig);
+	const analytics = getAnalytics(app);
+	const storage = getStorage(app);
+  </script>
 </body>
 </html>

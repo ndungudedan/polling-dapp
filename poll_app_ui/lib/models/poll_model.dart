@@ -22,10 +22,22 @@ class PollModel with _$PollModel {
 class PollCandidateModel with _$PollCandidateModel {
   const factory PollCandidateModel({
     @Default('') String title,
+        @Default('') String banner,
     @Default('') String description,
     @Default(0) int totalVotes,
   }) = _PollCandidateModel;
 
   factory PollCandidateModel.fromJson(Map<String, dynamic> json) =>
       _$PollCandidateModelFromJson(json);
+}
+
+@freezed
+class MyVote with _$MyVote {
+  const factory MyVote({
+    @Default(0) int pollIndex,
+    @Default(0) int candidateIndex,
+  }) = _MyVote;
+
+  factory MyVote.fromJson(Map<String, dynamic> json) =>
+      _$MyVoteFromJson(json);
 }

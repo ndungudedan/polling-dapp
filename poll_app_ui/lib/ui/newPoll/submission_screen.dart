@@ -1,9 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_test_1/ui/dashboard_screen.dart';
-
+import 'package:flutter_test_1/constants/constants.dart';
+import 'package:flutter_test_1/utils/text_styles.dart';
 import '../../providers/create_poll_provider.dart';
+import '../../widgets/snackbar_widget.dart';
+import '../dashboard_screen.dart';
 import '../poll_widget.dart';
 
 class SubmissionScreen extends ConsumerStatefulWidget {
@@ -17,50 +18,86 @@ class _SubmissionScreenState extends ConsumerState<SubmissionScreen> {
     Size size = MediaQuery.of(context).size;
     final pollProvider = ref.watch(createPollProvider);
 
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            height: size.height / 4,
-            width: double.infinity,
-            decoration: BoxDecoration(border: Border.all()),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          height: size.height / 4,
+          width: double.infinity,
+          decoration: BoxDecoration(border: Border.all(),
+          borderRadius: BorderRadius.circular(10)
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Image.memory(pollProvider.pollBanner!),
                 Text.rich(TextSpan(
-                    text: '${pollProvider.pollModel!.title}\n\n',
+                    text: '${pollProvider.pollModel!.title}\n',
+                    style: poppinsBold.copyWith(fontSize: 30),
                     children: [
                       TextSpan(
+                          style: poppinsRegular.copyWith(fontSize: 20),
                           text: '${pollProvider.pollModel!.description}\n'),
                       TextSpan(
+                          style: poppinsRegular.copyWith(fontSize: 10),
                           text:
                               '${DateTime.fromMillisecondsSinceEpoch(pollProvider.pollModel!.expiresAt)}\n'),
                     ]))
               ],
             ),
           ),
-          SizedBox(
-            height: 40,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Text(
+            'Poll Candidates Details',
+            style: poppinsBold.copyWith(fontSize: 30),
           ),
-          Wrap(
-            children: List.generate(pollProvider.candidates.length, (index) {
-              return PollCandidateWidget(
-                image: pollProvider.candidatesBanners.elementAt(index)!,
-                candidate: pollProvider.candidates.elementAt(index),
-              );
-            }),
-          ),
-          OutlinedButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => DashBooardScreen()));
+        ),
+        Wrap(
+          children: List.generate(pollProvider.candidates.length, (index) {
+            return PollCandidateWidget(
+              image: pollProvider.candidatesBanners.elementAt(index)!,
+              candidate: pollProvider.candidates.elementAt(index),
+            );
+          }),
+        ),
+        Center(
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              backgroundColor: kPrimaryColor
+            ),
+              onPressed: () async {
+                if (await pollProvider.submitPollToChain()) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                        backgroundColor: Colors.transparent,
+                      content: SnackBarWidget(
+                    title: 'Submission Successful',
+                    message: 'Transaction is being executed',
+                  )));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DashBooardScreen()));
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    backgroundColor: Colors.transparent,
+                      content: SnackBarWidget(
+                    title: 'Submission Failed',
+                    message: 'Please Try Again',
+                  )));
+                }
               },
-              child: Text('Submit'))
-        ],
-      ),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+                child: Text('Submit Poll',style: poppinsMedium.copyWith(color: Colors.white),),
+              )),
+        )
+      ],
     );
   }
 }

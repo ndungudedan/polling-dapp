@@ -1,15 +1,20 @@
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test_1/providers/wallet_connect_provider.dart';
 
 import '../models/poll_model.dart';
 
-final createPollProvider =
-    ChangeNotifierProvider<CreatePollProvider>((ref) => CreatePollProvider());
+final createPollProvider = ChangeNotifierProvider<CreatePollProvider>(
+    (ref) => CreatePollProvider(ref.watch(walletConnectProvider.notifier)));
 
 class CreatePollProvider extends ChangeNotifier {
+  CreatePollProvider(this.walletConnectProvider);
+  final WalletConnectProvider walletConnectProvider;
+
   bool submit = false;
   PollModel? pollModel;
   List<PollCandidateModel> candidates = [];
@@ -50,6 +55,46 @@ class CreatePollProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<bool> submitPollToChain() async {
+    if (await walletConnectProvider.connectWallet()) {
+      List<String> candidateTitles = [];
+      List<String> candidatedDescriptions = [];
+      List<String> candidateBanners = [];
+      try {
+        var banner = await uploadPhotosToFirebase(pollBanner!);
+        for (var cand in candidates) {
+          int index = candidates.indexOf(cand);
+          var image = await uploadPhotosToFirebase(candidatesBanners[index]!);
+          candidateTitles.add(cand.title);
+          candidatedDescriptions.add(cand.description);
+          candidateBanners.add(image);
+        }
+        var args = [
+          pollModel!.title,
+          pollModel!.description,
+          banner,
+          pollModel!.expiresAt,
+          candidateTitles,
+          candidatedDescriptions,
+          candidateBanners
+        ];
+        print(args);
+        var res =
+            await walletConnectProvider.contract!.send('createNewPoll', args);
+        print(res);
+        submit = false;
+        pollBanner = null;
+        pollModel = null;
+        candidates = [];
+        candidatesBanners = [];
+        return true;
+      } catch (e) {
+        print('submitPollToChain Error: ${e}');
+      }
+    }
+    return false;
+  }
+
   Future<Uint8List?> pickImage() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -59,5 +104,14 @@ class CreatePollProvider extends ChangeNotifier {
       return result.files.first.bytes;
     }
     return null;
+  }
+
+  Future<String> uploadPhotosToFirebase(Uint8List image) async {
+    String fileName = DateTime.now().toString() + '.png';
+    // Upload file
+    var upload =
+        await FirebaseStorage.instance.ref('uploads/$fileName').putData(image);
+
+    return upload.ref.fullPath;
   }
 }
