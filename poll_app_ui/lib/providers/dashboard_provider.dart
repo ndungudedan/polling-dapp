@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'dart:math';
-
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test_1/models/poll_model.dart';
 import 'package:flutter_test_1/providers/wallet_connect_provider.dart';
+import 'package:flutter_web3/ethers.dart';
 
 final dashboardPollProvider = ChangeNotifierProvider<DashboardProvider>(
     (ref) => DashboardProvider(ref.watch(walletConnectProvider.notifier)));
@@ -28,6 +27,7 @@ final pollCandidatesProvider =
 class DashboardProvider extends ChangeNotifier {
   DashboardProvider(this.walletConnectProvider) : super() {
     walletConnectProvider.initWalletProvider();
+    listenToContractEvents();
   }
   final WalletConnectProvider walletConnectProvider;
 
@@ -38,7 +38,7 @@ class DashboardProvider extends ChangeNotifier {
 
   Future<List<PollModel>> getAllPolls() async {
     try {
-      await walletConnectProvider.connectWallet();
+      await walletConnectProvider.initWalletProvider();
       List<dynamic> res =
           await walletConnectProvider.contract!.call('listPolls');
       print(res);
@@ -186,4 +186,38 @@ class DashboardProvider extends ChangeNotifier {
     }
     return myPolls;
   }
+
+  //Listening to events
+
+  Future<void> listenToContractEvents() async {
+    await walletConnectProvider.initWalletProvider();
+
+    walletConnectProvider.contract!.on('NewPollCreated',
+        (pollIndex, poll, owner, event) async {
+      print('NewPollCreated $pollIndex owner is $owner');
+      Event.fromJS(event);
+      await getAllPolls();
+      if (owner == walletConnectProvider.walletAddress) {
+        var banner = await getImageURl(poll[2]);
+        myPolls.add(PollModel(
+            title: poll[0],
+            description: poll[1],
+            banner: banner,
+            expiresAt: int.parse(poll[3].toString())));
+      }
+      notifyListeners();
+    });
+
+    walletConnectProvider.contract!.on('NewVoteCast',
+        (pollIndex, candidateIndex, voter, event) async {
+      print('NewVoteCast for $pollIndex canidate $candidateIndex by $voter');
+      Event.fromJS(event);
+
+      await getPollTotalVotes(pollIndex);
+      await getCandidateTotalVotes(pollIndex, candidateIndex);
+      await listAddressVotes();
+      notifyListeners();
+    });
+  }
+  
 }

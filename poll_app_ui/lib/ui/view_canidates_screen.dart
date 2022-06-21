@@ -5,10 +5,8 @@ import 'package:flutter_test_1/models/poll_model.dart';
 import 'package:flutter_test_1/widgets/common_appbar.dart';
 import '../providers/dashboard_provider.dart';
 import '../providers/wallet_connect_provider.dart';
-import '../utils/assets.dart';
 import '../utils/text_styles.dart';
 import '../widgets/snackbar_widget.dart';
-import 'newPoll/create_poll.dart';
 
 class ViewCandidatesScreen extends ConsumerStatefulWidget {
   final PollModel pollModel;
@@ -37,7 +35,7 @@ class ViewCandidatesScreenState extends ConsumerState<ViewCandidatesScreen> {
     Size size = MediaQuery.of(context).size;
     final walletProvider = ref.watch(walletConnectProvider.notifier);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (walletProvider.currentChainId != WalletConnectProvider().chainId &&
+      if (walletProvider.currentChainId != WalletConnectProvider.chainId &&
           mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             duration: const Duration(seconds: 10),
@@ -180,6 +178,7 @@ class PollVoteCandidateWidget extends ConsumerWidget {
             children: [
               Image.network(
                 candidate.banner,
+                fit: BoxFit.fitWidth,
                 height: size.height / 6,
                 width: size.width / 3,
                 errorBuilder: (context, object, stack) {

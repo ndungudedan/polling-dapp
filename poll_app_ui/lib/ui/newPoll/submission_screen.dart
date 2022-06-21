@@ -21,7 +21,7 @@ class _SubmissionScreenState extends ConsumerState<SubmissionScreen> {
         final walletProvider = ref.watch(walletConnectProvider.notifier);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (walletProvider.currentChainId != WalletConnectProvider().chainId &&
+          if (walletProvider.currentChainId != WalletConnectProvider.chainId &&
         mounted) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           duration: const Duration(seconds: 10),

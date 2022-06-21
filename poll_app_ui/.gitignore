@@ -28,6 +28,7 @@
 .flutter-plugins-dependencies
 .packages
 .history
+.firebase
 .pub-cache/
 .pub/
 /build/

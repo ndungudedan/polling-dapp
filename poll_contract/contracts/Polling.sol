@@ -31,6 +31,14 @@ contract Polling {
     mapping(address => uint256[]) public pollOwners;
     Poll[] public polls;
 
+    //Events
+    event NewPollCreated(uint256 index, Poll poll, address indexed owner);
+    event NewVoteCast(
+        uint256 pollId,
+        uint256 candidateId,
+        address indexed voter
+    );
+
     function listPolls() public view returns (Poll[] memory allPolls) {
         return polls;
     }
@@ -40,21 +48,16 @@ contract Polling {
         view
         returns (Candidate[] memory pollCandidates)
     {
+        require(index >= 0, "Index is negative");
         return candidates[index];
     }
 
-	function listAddressPolls()
-        public
-        view
-        returns (Poll[] memory addrPolls)
-    {
-        Poll[] memory myPolls = new Poll[](
-            pollOwners[msg.sender].length
-        );
+    function listAddressPolls() public view returns (Poll[] memory addrPolls) {
+        Poll[] memory myPolls = new Poll[](pollOwners[msg.sender].length);
 
-		for (uint256 x = 0; x < pollOwners[msg.sender].length; x++) {
-			myPolls[x]=polls[pollOwners[msg.sender][x]];
-		}
+        for (uint256 x = 0; x < pollOwners[msg.sender].length; x++) {
+            myPolls[x] = polls[pollOwners[msg.sender][x]];
+        }
 
         return myPolls;
     }
@@ -95,6 +98,7 @@ contract Polling {
         view
         returns (uint256 count)
     {
+        require(pollIndex >= 0, "Index is negative");
         return votes[pollIndex].length;
     }
 
@@ -103,6 +107,9 @@ contract Polling {
         view
         returns (uint256 candCount)
     {
+        require(pollIndex >= 0, "pollIndex is negative");
+        require(candidateIndex >= 0, "candidateIndex is negative");
+
         uint256 candVotes = 0;
         for (uint256 i = 0; i < votes[pollIndex].length; i++) {
             if (votes[pollIndex][i].candidateId == candidateIndex) {
@@ -120,7 +127,7 @@ contract Polling {
         string[] memory candidateTitle,
         string[] memory candidatedDescription,
         string[] memory candidateBanner
-    ) public returns (uint256 index) {
+    ) public {
         Poll memory poll = Poll(title, description, banner, expiresAt);
         polls.push(poll);
         uint256 pollIndex = polls.length - 1;
@@ -135,17 +142,14 @@ contract Polling {
             candidates[pollIndex].push(candidate);
         }
 
-        return pollIndex;
+        emit NewPollCreated(pollIndex, poll, msg.sender);
     }
 
     function voteForCandidate(uint256 pollIndex, uint256 candidateIndex)
         public
-        returns (
-            uint256 pollVotes,
-            uint256 candidateVotes,
-            bool success
-        )
     {
+        require(pollIndex >= 0, "pollIndex is negative");
+        require(candidateIndex >= 0, "candidateIndex is negative");
         Voter memory vote = Voter(msg.sender, candidateIndex);
         votes[pollIndex].push(vote);
         uint256 candVotes = 0;
@@ -154,7 +158,6 @@ contract Polling {
                 candVotes++;
             }
         }
-
-        return (votes[pollIndex].length, candVotes, true);
+        emit NewVoteCast(pollIndex, candidateIndex, msg.sender);
     }
 }

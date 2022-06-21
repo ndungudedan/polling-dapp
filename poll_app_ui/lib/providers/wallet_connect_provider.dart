@@ -7,14 +7,18 @@ final walletConnectProvider =
   return WalletConnectProvider();
 });
 
+final chainIdProvider = StateNotifierProvider<WalletConnectProvider, int>((ref) {
+  return WalletConnectProvider();
+});
+
 class WalletConnectProvider extends StateNotifier<int> {
-  WalletConnectProvider() : super(80001);
+  WalletConnectProvider() : super(0);
 
   int currentChainId = -1;
 
   //4=Rinkkeby network
   //80001=mumbai
-  final int chainId = 80001;
+  static final int chainId = 80001;
   String walletAddress = '';
 
   Web3Provider? web3Client;
@@ -53,6 +57,7 @@ class WalletConnectProvider extends StateNotifier<int> {
         });
 
         ethereum!.onChainChanged((chain) {
+          print('chain changing');
           currentChainId = chain;
           state = chain;
         });

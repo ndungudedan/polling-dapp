@@ -16,25 +16,26 @@ class DashBooardScreen extends ConsumerStatefulWidget {
   DashboardSCreenState createState() => DashboardSCreenState();
 }
 
-class DashboardSCreenState extends ConsumerState<DashBooardScreen>{
+class DashboardSCreenState extends ConsumerState<DashBooardScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     final walletProvider = ref.watch(walletConnectProvider.notifier);
+    final currentChainId = ref.watch(chainIdProvider);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (walletProvider.currentChainId != WalletConnectProvider().chainId &&
-        mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          duration: const Duration(seconds: 5),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.transparent,
-          content: SnackBarWidget(
-            title: 'Change your Wallet Chain to Polygon Mumbai',
-            message:
-                'This dapp works on the Ethereum Polygon Mumbai Testnet network',
-            isError: true,
-          )));
-    }
+      if (currentChainId != WalletConnectProvider.chainId && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            elevation: 0,
+            duration: const Duration(seconds: 5),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.transparent,
+            content: SnackBarWidget(
+              title: 'Change your Wallet Chain to Polygon Mumbai',
+              message:
+                  'This dapp works on the Ethereum Polygon Mumbai Testnet network',
+              isError: true,
+            )));
+      }
     });
 
     final allPollsFuture = ref.watch(allPollsProvider);
@@ -101,23 +102,25 @@ class DashboardSCreenState extends ConsumerState<DashBooardScreen>{
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        
                         children: [
                           Text(
-                              'Your Polls',
-                              style: poppinsBold.copyWith(color: kPrimaryColor),
-                            ),
-                            SizedBox(height: 10,),
+                            'Your Polls',
+                            style: poppinsBold.copyWith(color: kPrimaryColor),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
                           ListView.builder(
-                            shrinkWrap: true,
+                              shrinkWrap: true,
                               itemCount: polls.length,
                               itemBuilder: (context, index) {
                                 return Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 5),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 5),
                                   child: PollWidget(
-                                      index: index,
-                                      pollModel: polls.elementAt(index),
-                                    ),
+                                    index: index,
+                                    pollModel: polls.elementAt(index),
+                                  ),
                                 );
                               }),
                         ],
@@ -159,6 +162,7 @@ class PollWidget extends ConsumerWidget {
             children: [
               Image.network(
                 pollModel.banner,
+                fit: BoxFit.fitWidth,
                 height: size.height / 6,
                 width: size.width / 3,
                 errorBuilder: (context, object, stack) {
@@ -176,13 +180,15 @@ class PollWidget extends ConsumerWidget {
                 },
               ),
               Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle
-                ),
+                decoration:
+                    BoxDecoration(color: Colors.white, shape: BoxShape.circle),
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
-                  child: Text(pollModel.totalVotes.toString(),style: poppinsBold.copyWith(color: kPrimaryColor,fontSize: 20),),
+                  child: Text(
+                    pollModel.totalVotes.toString(),
+                    style: poppinsBold.copyWith(
+                        color: kPrimaryColor, fontSize: 20),
+                  ),
                 ),
               )
             ],
@@ -207,7 +213,8 @@ class PollWidget extends ConsumerWidget {
           Expanded(
             child: Center(
               child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(backgroundColor: Colors.white),
+                  style:
+                      OutlinedButton.styleFrom(backgroundColor: Colors.white),
                   onPressed: () {
                     Navigator.push(
                         context,
